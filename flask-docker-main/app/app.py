@@ -2,102 +2,75 @@ import os
 from flask import Flask, flash, render_template, redirect, url_for, request, session
 from dao.DAOUsuario import DAOUsuario 
 
-
-from flask import Flask
-
 app = Flask(__name__, template_folder='templates', static_folder='static')
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'clavepor defecto')
 
-app = Flask(
-    __name__,
-    template_folder='templates',  # ruta relativa a donde está app.py
-    static_folder='static'
-)
+# Configuración de clave secreta (puede venir de variable de entorno o fallback)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'mys3cr3tk3y')
 
-app = Flask(__name__)
-app.secret_key = "mys3cr3tk3y"
 db = DAOUsuario()
-ruta='/usuario'
+ruta = '/usuario'
 
 @app.route('/')
 def inicio():
     return render_template('index.html')
 
-@app.route(ruta+'/')
-# @app.route('/usuario/')
+@app.route(ruta + '/')
 def index():
     data = db.read(None)
+    return render_template('usuario/index.html', data=data)
 
-    return render_template('usuario/index.html', data = data)
-
-@app.route(ruta+'/add/')
+@app.route(ruta + '/add/')
 def add():
-    return render_template('/usuario/add.html')
+    return render_template('usuario/add.html')
 
-@app.route(ruta+'/addusuario', methods = ['POST', 'GET'])
+@app.route(ruta + '/addusuario', methods=['POST'])
 def addusuario():
-    if request.method == 'POST' and request.form['save']:
+    if 'save' in request.form:
         if db.insert(request.form):
             flash("Nuevo usuario creado")
         else:
-            flash("ERROR, al crear usuario")
+            flash("ERROR al crear usuario")
+    return redirect(url_for('index'))
 
-        return redirect(url_for('index'))
-    else:
-        return redirect(url_for('index'))
-
-@app.route(ruta+'/update/<int:id>/')
+@app.route(ruta + '/update/<int:id>/')
 def update(id):
-    data = db.read(id);
-
-    if len(data) == 0:
+    data = db.read(id)
+    if not data:
         return redirect(url_for('index'))
-    else:
-        session['update'] = id
-        return render_template('usuario/update.html', data = data)
+    session['update'] = id
+    return render_template('usuario/update.html', data=data)
 
-@app.route(ruta+'/updateusuario', methods = ['POST'])
+@app.route(ruta + '/updateusuario', methods=['POST'])
 def updateusuario():
-    if request.method == 'POST' and request.form['update']:
-
-        if db.update(session['update'], request.form):
-            flash('Se actualizo correctamente')
+    if 'update' in request.form:
+        if db.update(session.get('update'), request.form):
+            flash('Se actualizó correctamente')
         else:
             flash('ERROR en actualizar')
-
         session.pop('update', None)
+    return redirect(url_for('index'))
 
-        return redirect(url_for('index'))
-    else:
-        return redirect(url_for('index'))
-
-@app.route(ruta+'/delete/<int:id>/')
+@app.route(ruta + '/delete/<int:id>/')
 def delete(id):
-    data = db.read(id);
-
-    if len(data) == 0:
+    data = db.read(id)
+    if not data:
         return redirect(url_for('index'))
-    else:
-        session['delete'] = id
-        return render_template('usuario/delete.html', data = data)
+    session['delete'] = id
+    return render_template('usuario/delete.html', data=data)
 
-@app.route(ruta+'/deleteusuario', methods = ['POST'])
+@app.route(ruta + '/deleteusuario', methods=['POST'])
 def deleteusuario():
-    if request.method == 'POST' and request.form['delete']:
-
-        if db.delete(session['delete']):
+    if 'delete' in request.form:
+        if db.delete(session.get('delete')):
             flash('Usuario eliminado')
         else:
             flash('ERROR al eliminar')
         session.pop('delete', None)
-
-        return redirect(url_for('index'))
-    else:
-        return redirect(url_for('index'))
+    return redirect(url_for('index'))
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('error.html')
+    return render_template('error.html'), 404
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run(host='0.0.0.0', debug=True)
