@@ -49,7 +49,16 @@
               <td>{{ row[1] }}</td>
               <td>{{ row[2] }}</td>
               <td>{{ row[3] }}</td>
-              
+              <td align="center">
+                <a href="/usuario/update/{{ row[0]}}">
+                  <button type="button" class="btn btn-sm btn-warning btn-flat" title="Update"><span
+                      class="glyphicon glyphicon-pencil"></span></button>
+                </a>
+                <a href="/usuario/delete/{{ row[0]}}">
+                  <button type="button" class="btn btn-sm btn-danger btn-flat" title="Delete"><span
+                      class="glyphicon glyphicon-remove"></span></button>
+                </a>
+              </td>
             </tr>
             {% endfor %}
             {% endif%}
