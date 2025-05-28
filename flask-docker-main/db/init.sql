@@ -12,3 +12,8 @@ CREATE TABLE usuario (
 insert into usuario(nombre,telefono,email)
 values ('Jaime','999888777','jaime@abc.com');
 
+insert into usuario(nombre,telefono,email)
+values ('Bob','999881477','bob.toronja@abc.com');
+
+insert into usuario(nombre,telefono,email)
+values ('Arenita','971280277','arenita.mejilla@abc.com');

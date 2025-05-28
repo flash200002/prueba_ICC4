@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block body %}
+<h2>Lista de Usuarios</h2>
+<a href="{{ url_for('register') }}" class="btn btn-success mb-3">Agregar Usuario</a>
+<a href="{{ url_for('logout') }}" class="btn btn-danger mb-3 float-right">Cerrar Sesión</a>
+<table class="table table-striped" id="dataphone">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuarios %}
+        <tr>
+            <td>{{ usuario[0] }}</td>
+            <td>{{ usuario[1] }}</td>
+            <td>{{ usuario[2] }}</td>
+            <td>{{ usuario[3] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

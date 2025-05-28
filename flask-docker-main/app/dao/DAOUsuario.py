@@ -1,6 +1,15 @@
 import pymysql
+import os
 
 class DAOUsuario:
+    def connect(self):
+        return pymysql.connect(
+            host=os.getenv('DB_HOST', 'db'),
+            user=os.getenv('DB_USER', 'root'),
+            password=os.getenv('DB_PASS', 'root'),
+            db=os.getenv('DB_NAME', 'db_poo')
+        )
+        
     def connect(self):
         return pymysql.connect(host="db",user="root",password="root",db="db_poo" )
 

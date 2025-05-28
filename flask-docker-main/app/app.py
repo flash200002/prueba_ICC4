@@ -1,6 +1,18 @@
+import os
 from flask import Flask, flash, render_template, redirect, url_for, request, session
-from dao.DAOUsuario import DAOUsuario
- 
+from dao.DAOUsuario import DAOUsuario 
+
+
+from flask import Flask
+
+app = Flask(__name__, template_folder='templates', static_folder='static')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'clavepor defecto')
+
+app = Flask(
+    __name__,
+    template_folder='templates',  # ruta relativa a donde está app.py
+    static_folder='static'
+)
 
 app = Flask(__name__)
 app.secret_key = "mys3cr3tk3y"

@@ -5,6 +5,12 @@ services:
       - db
     ports:
       - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: root
+      DB_NAME: db_poo
+      SECRET_KEY: 'cambiatuclaveaqui'
 
   db:
     image: mysql:5.7
