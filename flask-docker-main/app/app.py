@@ -36,6 +36,21 @@ def logout():
     flash('Sesión cerrada')
     return redirect(url_for('inicio'))
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        data = {
+            'nombre': request.form.get('nombre'),
+            'telefono': request.form.get('telefono'),
+            'email': request.form.get('email')
+        }
+        if db.insert(data):
+            flash('Usuario registrado correctamente')
+            return redirect(url_for('login'))
+        else:
+            flash('Error al registrar usuario')
+    return render_template('register.html')
+
 # Rutas protegidas (solo si está el usuario en sesión)
 def login_required(f):
     from functools import wraps
