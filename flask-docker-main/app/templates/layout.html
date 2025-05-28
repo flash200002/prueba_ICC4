@@ -28,7 +28,7 @@
                     <div class="collapse navbar-collapse" id="navbar-collapse">
                         <ul class="nav navbar-nav">
                             {% if 'user' in session %}
-                                <li {% if request.path == url_for('index') or request.path == url_for('usuarios') %}class="active"{% endif %}>
+                                <li {% if request.path == url_for('login') or request.path == url_for('usuarios') %}class="active"{% endif %}>
                                     <a href="{{ url_for('usuarios') }}">Usuarios</a>
                                 </li>
                                 <li>
