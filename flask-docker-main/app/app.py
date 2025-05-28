@@ -12,7 +12,7 @@ ruta = '/usuario'
 def inicio():
     # Si ya hay sesión activa, redirige a usuarios
     if 'user' in session:
-        return redirect(url_for('index'))
+        return redirect(url_for('usuarios'))
     return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -25,7 +25,7 @@ def login():
         if user:
             session['user'] = user[1]  # Guarda nombre de usuario en sesión
             flash(f'Bienvenido {user[1]}')
-            return redirect(url_for('index'))
+            return redirect(url_for('usuarios'))
         else:
             flash('Email no registrado')
     return render_template('login.html')
@@ -51,7 +51,7 @@ def register():
             flash('Error al registrar usuario')
     return render_template('register.html')
 
-# Rutas protegidas (solo si está el usuario en sesión)
+# Decorador para proteger rutas que requieren login
 def login_required(f):
     from functools import wraps
     @wraps(f)
@@ -64,7 +64,7 @@ def login_required(f):
 
 @app.route(ruta + '/')
 @login_required
-def index():
+def usuarios():
     data = db.read(None)
     return render_template('usuario/index.html', data=data)
 
@@ -81,14 +81,14 @@ def addusuario():
             flash("Nuevo usuario creado")
         else:
             flash("ERROR al crear usuario")
-    return redirect(url_for('index'))
+    return redirect(url_for('usuarios'))
 
 @app.route(ruta + '/update/<int:id>/')
 @login_required
 def update(id):
     data = db.read(id)
     if not data:
-        return redirect(url_for('index'))
+        return redirect(url_for('usuarios'))
     session['update'] = id
     return render_template('usuario/update.html', data=data)
 
@@ -101,14 +101,14 @@ def updateusuario():
         else:
             flash('ERROR en actualizar')
         session.pop('update', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('usuarios'))
 
 @app.route(ruta + '/delete/<int:id>/')
 @login_required
 def delete(id):
     data = db.read(id)
     if not data:
-        return redirect(url_for('index'))
+        return redirect(url_for('usuarios'))
     session['delete'] = id
     return render_template('usuario/delete.html', data=data)
 
@@ -121,7 +121,7 @@ def deleteusuario():
         else:
             flash('ERROR al eliminar')
         session.pop('delete', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('usuarios'))
 
 @app.errorhandler(404)
 def page_not_found(error):
